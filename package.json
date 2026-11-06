@@ -2,8 +2,8 @@
   "name": "-cse340-course-repo",
   "type": "module",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "dev": "node --use-system-ca server.js",
+    "start": "node --use-system-ca server.js"
   },
   "dependencies": {
     "dotenv": "^18.0.9",
