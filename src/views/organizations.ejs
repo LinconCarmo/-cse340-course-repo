@@ -1,4 +1,3 @@
-
 <%- include('partials/header') %>
 
 <main>
@@ -10,20 +9,24 @@
 
     <div class="organizations-list">
 
-        <div class="organization">
-            <h3>BrightFuture Builders</h3>
-            <img src="/images/brightfuture.jpg" alt="Volunteers building a house">
-        </div>
+        <% organizations.forEach(organization => { %>
 
-        <div class="organization">
-            <h3>GreenHarvest Growers</h3>
-            <img src="/images/greenharvest.jpg" alt="Volunteers working in a community garden">
-        </div>
+            <div class="organization">
 
-        <div class="organization">
-            <h3>UnityServe Volunteers</h3>
-            <img src="/images/unityserve.jpg" alt="Volunteers helping their community">
-        </div>
+                <h3><%= organization.name %></h3>
+
+                <img
+                    src="/images/<%= organization.logo_filename %>"
+                    alt="<%= organization.name %> logo"
+                >
+
+                <p><%= organization.description %></p>
+
+                <p><%= organization.contact_email %></p>
+
+            </div>
+
+        <% }); %>
 
     </div>
 </main>
