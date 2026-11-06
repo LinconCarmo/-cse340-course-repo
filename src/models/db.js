@@ -1,10 +1,15 @@
 import { Pool } from 'pg';
 
+const sslVerification = process.env.DB_SSL_REJECT_UNAUTHORIZED;
+const rejectUnauthorized =
+    sslVerification === undefined
+        ? process.env.NODE_ENV !== 'production'
+        : sslVerification === 'true';
+
 const pool = new Pool({
     connectionString: process.env.DB_URL,
     ssl: {
-        rejectUnauthorized:
-            process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false'
+        rejectUnauthorized
     }
 });
 
