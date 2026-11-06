@@ -8,10 +8,9 @@
     <p>Discover the different types of service opportunities.</p>
 
     <ul>
-        <li>Education</li>
-        <li>Environment</li>
-        <li>Community Support</li>
-        <li>Health and Wellness</li>
+        <% categories.forEach(category => { %>
+            <li><%= category.name %></li>
+        <% }); %>
     </ul>
 </main>
 

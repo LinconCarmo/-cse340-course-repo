@@ -1,5 +1,7 @@
 import 'dotenv/config';
+import { getAllCategories } from './src/models/categories.js';
 import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjects } from './src/models/projects.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -33,13 +35,17 @@ app.get('/organizations', async (req, res) => {
 });
 
 // Projects page
-app.get('/projects', (req, res) => {
-    res.render('projects', { title: 'Projects' });
+app.get('/projects', async (req, res) => {
+    const projects = await getAllProjects();
+
+    res.render('projects', { title: 'Projects', projects });
 });
 
 // Categories page
-app.get('/categories', (req, res) => {
-    res.render('categories', { title: 'Categories' });
+app.get('/categories', async (req, res) => {
+    const categories = await getAllCategories();
+
+    res.render('categories', { title: 'Categories', categories });
 });
 
 app.listen(PORT, async () => {
