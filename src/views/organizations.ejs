@@ -16,7 +16,7 @@
                 <h3><%= organization.name %></h3>
 
                 <img
-                    src="/images/<%= organization.logo_filename %>"
+                    src="/images/<%= organization.logo || organization.logo_filename %>"
                     alt="<%= organization.name %> logo"
                 >
 

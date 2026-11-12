@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS public.organization (
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT NOT NULL,
     contact_email VARCHAR(255) NOT NULL UNIQUE,
-    logo_filename VARCHAR(255) NOT NULL
+    logo_filename VARCHAR(255) NOT NULL,
+    logo VARCHAR(255) NOT NULL DEFAULT ''
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS organization_name_key
@@ -32,24 +33,27 @@ CREATE TABLE IF NOT EXISTS public.project_category (
     PRIMARY KEY (project_id, category_id)
 );
 
-INSERT INTO public.organization (name, description, contact_email, logo_filename)
+INSERT INTO public.organization (name, description, contact_email, logo_filename, logo)
 VALUES
     (
         'BrightFuture Builders',
         'A nonprofit focused on improving community infrastructure through sustainable construction projects.',
         'info@brightfuturebuilders.org',
+        'brightfuture-logo.png',
         'brightfuture-logo.png'
     ),
     (
         'GreenHarvest Growers',
         'An urban farming collective promoting food sustainability and education in local neighborhoods.',
         'contact@greenharvest.org',
+        'greenharvest-logo.png',
         'greenharvest-logo.png'
     ),
     (
         'UnityServe Volunteers',
         'A volunteer coordination group supporting local charities and service initiatives.',
         'hello@unityserve.org',
+        'unityserve-logo.png',
         'unityserve-logo.png'
     )
 ON CONFLICT (name) DO NOTHING;
