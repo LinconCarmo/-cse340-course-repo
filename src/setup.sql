@@ -17,8 +17,12 @@ CREATE TABLE IF NOT EXISTS public.project (
     organization_id INTEGER NOT NULL
         REFERENCES public.organization (organization_id) ON DELETE CASCADE,
     name VARCHAR(150) NOT NULL UNIQUE,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    project_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
+
+ALTER TABLE public.project
+    ADD COLUMN IF NOT EXISTS project_date DATE NOT NULL DEFAULT CURRENT_DATE;
 
 CREATE TABLE IF NOT EXISTS public.category (
     category_id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -58,26 +62,45 @@ VALUES
     )
 ON CONFLICT (name) DO NOTHING;
 
-INSERT INTO public.project (organization_id, name, description)
+INSERT INTO public.project (organization_id, name, description, project_date)
 SELECT organization_id, 'Community Garden Project',
-       'Build and maintain a neighborhood garden that provides fresh produce and hands-on growing education.'
+       'Build and maintain a neighborhood garden that provides fresh produce and hands-on growing education.',
+       CURRENT_DATE + 7
 FROM public.organization
 WHERE name = 'GreenHarvest Growers'
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name) DO UPDATE SET project_date = EXCLUDED.project_date;
 
-INSERT INTO public.project (organization_id, name, description)
+INSERT INTO public.project (organization_id, name, description, project_date)
 SELECT organization_id, 'Neighborhood Cleanup',
-       'Bring neighbors together to remove litter and improve shared outdoor spaces.'
+       'Bring neighbors together to remove litter and improve shared outdoor spaces.',
+       CURRENT_DATE + 14
 FROM public.organization
 WHERE name = 'UnityServe Volunteers'
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name) DO UPDATE SET project_date = EXCLUDED.project_date;
 
-INSERT INTO public.project (organization_id, name, description)
+INSERT INTO public.project (organization_id, name, description, project_date)
 SELECT organization_id, 'Food Donation Drive',
-       'Collect and distribute food donations to local families and community food programs.'
+       'Collect and distribute food donations to local families and community food programs.',
+       CURRENT_DATE + 21
 FROM public.organization
 WHERE name = 'BrightFuture Builders'
-ON CONFLICT (name) DO NOTHING;
+ON CONFLICT (name) DO UPDATE SET project_date = EXCLUDED.project_date;
+
+INSERT INTO public.project (organization_id, name, description, project_date)
+SELECT organization_id, 'Community Tutoring Program',
+       'Connect volunteer tutors with students who need extra academic support.',
+       CURRENT_DATE + 28
+FROM public.organization
+WHERE name = 'UnityServe Volunteers'
+ON CONFLICT (name) DO UPDATE SET project_date = EXCLUDED.project_date;
+
+INSERT INTO public.project (organization_id, name, description, project_date)
+SELECT organization_id, 'Neighborhood Tree Planting',
+       'Plant and care for trees in neighborhood parks and public spaces.',
+       CURRENT_DATE + 35
+FROM public.organization
+WHERE name = 'GreenHarvest Growers'
+ON CONFLICT (name) DO UPDATE SET project_date = EXCLUDED.project_date;
 
 INSERT INTO public.category (name)
 VALUES
@@ -97,6 +120,16 @@ WHERE (project.name = 'Community Garden Project'
        AND category.name IN ('Community Support', 'Environment'))
    OR (project.name = 'Food Donation Drive'
        AND category.name IN ('Community Support', 'Health and Wellness'))
+ON CONFLICT (project_id, category_id) DO NOTHING;
+
+INSERT INTO public.project_category (project_id, category_id)
+SELECT project.project_id, category.category_id
+FROM public.project
+CROSS JOIN public.category
+WHERE (project.name = 'Community Tutoring Program'
+       AND category.name IN ('Community Support', 'Education'))
+   OR (project.name = 'Neighborhood Tree Planting'
+       AND category.name IN ('Environment', 'Health and Wellness'))
 ON CONFLICT (project_id, category_id) DO NOTHING;
 
 COMMIT;

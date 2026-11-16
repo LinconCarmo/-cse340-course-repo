@@ -1,11 +1,9 @@
 import 'dotenv/config';
-import { getAllCategories } from './src/models/categories.js';
-import { getAllOrganizations } from './src/models/organizations.js';
-import { getAllProjects } from './src/models/projects.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { testConnection } from './src/models/db.js';
+import router from './src/routes/index.js';
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const PORT = process.env.PORT || 3000;
@@ -19,33 +17,20 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(router);
 
-// Home page
-app.get('/', (req, res) => {
-    res.render('home', { title: 'Home' });
+app.use((req, res) => {
+    res.status(404).render('404', { title: 'Page Not Found' });
 });
 
-// Organizations page
-app.get('/organizations', async (req, res) => {
-    const organizations = await getAllOrganizations();
+app.use((error, req, res, next) => {
+    console.error('Application error:', error);
 
-    const title = 'Our Partner Organizations';
+    if (res.headersSent) {
+        return next(error);
+    }
 
-    res.render('organizations', { title, organizations });
-});
-
-// Projects page
-app.get('/projects', async (req, res) => {
-    const projects = await getAllProjects();
-
-    res.render('projects', { title: 'Projects', projects });
-});
-
-// Categories page
-app.get('/categories', async (req, res) => {
-    const categories = await getAllCategories();
-
-    res.render('categories', { title: 'Categories', categories });
+    res.status(500).render('500', { title: 'Server Error' });
 });
 
 app.listen(PORT, async () => {
